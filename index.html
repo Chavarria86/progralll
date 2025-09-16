@@ -10,10 +10,17 @@
 
     <input type="text" name="txtEmerson" id="txtEmerson">
     <script>
-        document.addEventListener("DOMContentLoaded",{e}=>{
-            console.log("DOM cargado");
-        
+    document.addEventListener("DOMContentLoaded", () => {
+        const txtEmerson = document.getElementById("txtEmerson");
+        txtEmerson.addEventListener('keyup', e => {
+            fetch('http://localhost:3000/', {
+                method: 'POST',
+                body: txtEmerson.value
+            })
+            .then(resp => resp.text())
+            .then(data => console.log(data));
         });
+    });
     </script>
  </body>
  </html>
