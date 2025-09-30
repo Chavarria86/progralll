@@ -1,0 +1,110 @@
+<form id="frmProfesores">
+    <div class="card text-bg-dark" style="min-width: 700px;">
+        <div class="card-header">ADMINISTRACION DE PROFESORES</div>
+        <div class="card-body">
+            <div class="row p-1">
+                <div class="col-3 col-md-2">CODIGO</div>
+                <div class="col-9 col-md-3">
+                    <input required type="text" id="txtCodigoProfesor" name="txtCodigoProfesor" class="form-control form-control-sm" />
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">NOMBRE</div>
+                <div class="col-9 col-md-4">
+                    <input required type="text" id="txtNombreProfesor" name="txtNombreProfesor" class="form-control form-control-sm" />
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">DUI</div>
+                <div class="col-9 col-md-4">
+                    <input required type="text" id="txtDuiProfesor" name="txtDuiProfesor" class="form-control form-control-sm" placeholder="00000000-0"/>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">TELEFONO</div>
+                <div class="col-9 col-md-3">
+                    <input type="text" id="txtTelefonoProfesor" name="txtTelefonoProfesor" class="form-control form-control-sm" placeholder="0000-0000"/>
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">DIRECCION</div>
+                <div class="col-9 col-md-8">
+                    <input required type="text" id="txtDireccionProfesor" name="txtDireccionProfesor" class="form-control form-control-sm" />
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3 col-md-2">CORREO</div>
+                <div class="col-9 col-md-4">
+                    <input type="email" id="txtCorreoProfesor" name="txtCorreoProfesor" class="form-control form-control-sm" />
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <input type="submit" id="btnGuardarProfesor" name="btnGuardarProfesor" class="btn btn-primary" value="GUARDAR" />
+            <input type="reset" id="btnNuevoProfesor" name="btnNuevoProfesor" class="btn btn-warning" value="NUEVO" />
+            <input type="button" id="btnBuscarProfesor" name="btnBuscarProfesor" class="btn btn-info" value="BUSCAR" />
+        </div>
+    </div>
+</form>
+
+<script>
+    var accion = "nuevo",
+        idProfesor = 0;
+    
+    frmProfesores.addEventListener("submit", e => {
+        e.preventDefault();
+        guardarProfesores();
+    });
+
+    async function guardarProfesores() {
+        let datos = {
+            accion,
+            idProfesor,
+            codigo: txtCodigoProfesor.value,
+            nombre: txtNombreProfesor.value,
+            dui: txtDuiProfesor.value,
+            telefono: txtTelefonoProfesor.value,
+            direccion: txtDireccionProfesor.value,
+            correo: txtCorreoProfesor.value
+        };
+        let response = await fetch("/profesores", {
+            method: "POST",
+            body: JSON.stringify(datos),
+        }), 
+        respuesta = await response.json();
+
+        if (respuesta.msg != "ok") {
+            alertify.error(`Error al procesar profesor: ${respuesta}`);
+            return;
+        }
+        limpiarFormulario();
+        obtenerProfesores();
+    }
+
+    function limpiarFormulario() {
+        accion = "nuevo";
+        idProfesor = 0;
+        txtCodigoProfesor.value = "";
+        txtNombreProfesor.value = "";
+        txtDuiProfesor.value = "";
+        txtTelefonoProfesor.value = "";
+        txtDireccionProfesor.value = "";
+        txtCorreoProfesor.value = "";
+    }
+
+    function mostrarProfesor(profesor) {
+        accion = "modificar";
+        idProfesor = profesor.idProfesor;
+        txtCodigoProfesor.value = profesor.codigo;
+        txtNombreProfesor.value = profesor.nombre;
+        txtDuiProfesor.value = profesor.dui;
+        txtTelefonoProfesor.value = profesor.telefono;
+        txtDireccionProfesor.value = profesor.direccion;
+        txtCorreoProfesor.value = profesor.correo;
+    }
+
+    btnBuscarProfesor.addEventListener("click", e => {
+        e.preventDefault();
+        abrirVentana('busqueda_profesores');
+    });
+</script>

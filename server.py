@@ -1,16 +1,41 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from urllib import parse
+from urllib.parse import urlparse, parse_qs
 import json 
 import crud_alumno
+import crud_profesor   
 
 port = 3000
 
 crudAlumno = crud_alumno.crud_alumno()
+crudProfesor = crud_profesor.crud_profesor()
 
 class miServidor(SimpleHTTPRequestHandler):
     def do_GET(self):
-        if self.path=="/":
-            self.path="index.html"
+        url_parseada = urlparse(self.path)
+        path = url_parseada.path
+        parametros = parse_qs(url_parseada.query)
+
+        if self.path == "/":
+            self.path = "index.html"
+            return SimpleHTTPRequestHandler.do_GET(self)
+        
+        # 🔹 Endpoint alumnos
+        if self.path == "/alumnos":
+            alumnos = crudAlumno.consultar("")
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(json.dumps(alumnos).encode('utf-8'))
+
+        # 🔹 Endpoint profesores
+        if self.path == "/profesores":
+            profesores = crudProfesor.consultar("")
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(json.dumps(profesores).encode('utf-8'))
+
+        if path == "/vistas":
+            self.path = '/modulos/' + parametros['form'][0] + '.html'
             return SimpleHTTPRequestHandler.do_GET(self)
     
     def do_POST(self):
@@ -19,15 +44,19 @@ class miServidor(SimpleHTTPRequestHandler):
         datos = datos.decode("utf-8")
         datos = parse.unquote(datos)
         datos = json.loads(datos)
-        resp = {"msg": crudAlumno.administrar(datos)}
-        
+
+        # 🔹 Verifica si los datos son de alumno o profesor
+        if "idAlumno" in datos or datos.get("tipo") == "alumno":
+            resp = {"msg": crudAlumno.administrar(datos)}
+        elif "idProfesor" in datos or datos.get("tipo") == "profesor":
+            resp = {"msg": crudProfesor.administrar(datos)}
+        else:
+            resp = {"msg": "Entidad no reconocida"}
+
         self.send_response(200)
         self.end_headers()
         self.wfile.write(json.dumps(resp).encode("utf-8"))
 
-print("Servidor ejecutandose en el puerto", port)
+print("Servidor ejecutándose en el puerto", port)
 server = HTTPServer(("localhost", port), miServidor)
 server.serve_forever()
-print("Servidor ejecutandose en el puerto 3000",port)       
-server = HTTPServer(("localhost",port),miServidor)
-server.serve_forever() 
