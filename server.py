@@ -20,14 +20,13 @@ class miServidor(SimpleHTTPRequestHandler):
             self.path = "index.html"
             return SimpleHTTPRequestHandler.do_GET(self)
         
-        # 🔹 Endpoint alumnos
+        
         if self.path == "/alumnos":
             alumnos = crudAlumno.consultar("")
             self.send_response(200)
             self.end_headers()
             self.wfile.write(json.dumps(alumnos).encode('utf-8'))
 
-        # 🔹 Endpoint profesores
         if self.path == "/profesores":
             profesores = crudProfesor.consultar("")
             self.send_response(200)
@@ -45,7 +44,7 @@ class miServidor(SimpleHTTPRequestHandler):
         datos = parse.unquote(datos)
         datos = json.loads(datos)
 
-        # 🔹 Verifica si los datos son de alumno o profesor
+       
         if "idAlumno" in datos or datos.get("tipo") == "alumno":
             resp = {"msg": crudAlumno.administrar(datos)}
         elif "idProfesor" in datos or datos.get("tipo") == "profesor":
