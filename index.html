@@ -66,11 +66,12 @@
             }else {$(`#${form}`).show();
 
         }
-        }        function cerrarVentana(){
-            $('.btn-close').off('click').click{e=>{
-                let form = e.target.dataset.form;
-                $(`#${form} `).hide();
-            }};
+        }
+        function cerrarVentana(){
+            $('.btn-close').off('click').on('click', function(e){
+                let form = e.currentTarget.dataset.form;
+                $(`#${form}`).hide();
+            });
         }
     </script>
 </body>

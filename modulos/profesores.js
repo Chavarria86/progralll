@@ -1,5 +1,5 @@
 var accion = "nuevo",
-    idProfesor = 0;
+    idDocente = 0;
 
 document.addEventListener("DOMContentLoaded", event => { 
     frmProfesores.addEventListener("submit", e => {
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", event => {
 async function guardarProfesores(){
     let datos = {
         accion,
-        idProfesor,
+        idDocente,
         codigo: txtCodigoProfesor.value,
         nombre: txtNombreProfesor.value,
         dui: txtDuiProfesor.value,
@@ -37,7 +37,7 @@ async function guardarProfesores(){
 
 function limpiarFormulario(){
     accion = "nuevo";
-    idProfesor = 0;
+    idDocente = 0;
     txtCodigoProfesor.value = "";
     txtNombreProfesor.value = "";
     txtDuiProfesor.value = "";
@@ -74,7 +74,7 @@ function mostrarDatosProfesores(profesores){
 
 function mostrarProfesor(profesor){
     accion = "modificar";
-    idProfesor = profesor.idProfesor;
+    idDocente = profesor.idDocente;
     txtCodigoProfesor.value = profesor.codigo;
     txtNombreProfesor.value = profesor.nombre;
     txtDuiProfesor.value = profesor.dui;
@@ -87,7 +87,7 @@ function eliminarProfesor(profesor, event){
     event.preventDefault();
 
     if(confirm(`¿Está seguro de eliminar a ${profesor.nombre}?`)){
-        idProfesor = profesor.idProfesor;
+        idDocente = profesor.idDocente;
         accion = "eliminar";
         guardarProfesores();
     }

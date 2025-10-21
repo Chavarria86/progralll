@@ -25,7 +25,7 @@ class crud_profesor:
             sql = """
                 UPDATE profesores 
                 SET codigo=%s, nombre=%s, dui=%s, telefono=%s, direccion=%s, correo=%s
-                WHERE idProfesor=%s
+                WHERE idDocente=%s
             """
             valores = (
                 datos['codigo'], 
@@ -34,11 +34,11 @@ class crud_profesor:
                 datos['telefono'], 
                 datos['direccion'], 
                 datos['correo'], 
-                datos['idProfesor']
+                datos['idDocente']
             )
         
         if datos['accion'] == "eliminar":
-            sql = "DELETE FROM profesores WHERE idProfesor=%s"
-            valores = (datos['idProfesor'],)
+            sql = "DELETE FROM profesores WHERE idDocente=%s"
+            valores = (datos['idDocente'],)
         
         return db.ejecutar(sql, valores)

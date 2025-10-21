@@ -47,7 +47,7 @@ class miServidor(SimpleHTTPRequestHandler):
        
         if "idAlumno" in datos or datos.get("tipo") == "alumno":
             resp = {"msg": crudAlumno.administrar(datos)}
-        elif "idProfesor" in datos or datos.get("tipo") == "profesor":
+        elif "idDocente" in datos or datos.get("tipo") == "profesor":
             resp = {"msg": crudProfesor.administrar(datos)}
         else:
             resp = {"msg": "Entidad no reconocida"}
