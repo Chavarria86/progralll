@@ -56,13 +56,13 @@
         });
         function abrirVentana(form, callback){
             if( $(`#${form} > form`).length === 0 ){
-                fetch(`/vistas?form=${form}`)
-                .then(response => response.text())
-                .then(ventana => {
+                 fetch(`/vistas?form=${form}`)
+                 .then(response => response.text())
+                 .then(ventana => {
                     $(`#${form}`).html(ventana).draggable();
                     if(callback) callback();
                 })
-                .catch(error => console.error('Error al cargar el formulario:', error));
+                  .catch(error => console.error('Error al cargar el formulario:', error));
             }else {$(`#${form}`).show();
 
         }
