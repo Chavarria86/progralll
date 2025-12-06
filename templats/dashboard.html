@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UROMED - {% block title %}Sistema{% endblock %}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0fdf4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 1em;
+        }
+
+        nav {
+            background-color: #e8f5e9;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-bottom: 1px solid #c8e6c9;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #2e7d32;
+            font-weight: bold;
+            font-size: 1em;
+            padding: 8px 16px;
+            transition: background-color 0.3s;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            background-color: #c8e6c9;
+        }
+
+        /* Botón de Gestión de Usuarios (Super Admin + Doctor) */
+        .boton-gestion {
+            background-color: #ff9800;
+            padding: 8px 14px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid #ff9800;
+        }
+
+        .boton-gestion:hover {
+            background-color: #f57c00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+        }
+
+        /* Botón IA Diagnóstica (colores suaves UROMED) */
+        .boton-ia {
+            background: linear-gradient(135deg, #66bb6a, #81c784);
+            padding: 8px 14px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .boton-ia:hover {
+            box-shadow: 0 0 12px rgba(102, 187, 106, 0.6);
+            transform: translateY(-2px);
+        }
+
+        main {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .bienvenida {
+            font-size: 1.2em;
+            color: #388e3c;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Indicador de rol Super Admin */
+        .badge-superadmin {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 10px;
+            display: inline-block;
+        }
+
+        /* Indicador de rol Doctor */
+        .badge-doctor {
+            background: linear-gradient(135deg, #4CAF50, #2e7d32);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 10px;
+            display: inline-block;
+        }
+
+        footer {
+            background-color: #e8f5e9;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.9em;
+            color: #777;
+            border-top: 1px solid #c8e6c9;
+            margin-top: 40px;
+        }
+
+        /* Estilos adicionales para páginas específicas */
+        {% block estilos_extra %}{% endblock %}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>UROMED</h1>
+        <p>Medico IA: Asistente de Diagnóstico</p>
+    </header>
+
+    <nav>
+        <a href="{{ url_for('inicio') }}">🏠 Inicio</a>
+        <a href="{{ url_for('crear_expediente') }}">📝 Crear expediente</a>
+        <a href="{{ url_for('historial') }}">📋 Historial</a>
+        
+        <!-- ✅ NORMALIZADO: Gestión de Usuarios - Para Super Admin Y doctor -->
+        {% if session.get('rol')|lower in ['super administrador', 'doctor'] %}
+        <a href="{{ url_for('gestion_usuarios') }}" class="boton-gestion">👥 Gestión Usuarios</a>
+        {% endif %}
+        
+        <a href="{{ url_for('perfil') }}">👤 Mi perfil</a>
+        
+        <!-- ✅ IA Diagnóstica - Botón funcional -->
+        {% if session.get('rol')|lower in ['super administrador', 'doctor', 'enfermero'] %}
+        <a href="{{ url_for('ia_chat') }}" class="boton-ia">🤖 IA Diagnóstica</a>
+        {% endif %}
+    </nav>
+
+    {% if usuario and rol %}
+        <div class="bienvenida">
+            Bienvenido, {{ usuario }} 
+            {% if rol|lower == 'super administrador' %}
+                <span class="badge-superadmin">👑 {{ rol }}</span>
+            {% elif rol|lower == 'doctor' %}
+                <span class="badge-doctor">👨‍⚕️ {{ rol }}</span>
+            {% else %}
+                ({{ rol }})
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <main>
+        {% block contenido %}
+        <!-- El contenido de las páginas hijas irá aquí -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        &copy; 2025 UROMED - Sistema de Gestión Médica
+    </footer>
+
+    <!-- Scripts opcionales -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>
